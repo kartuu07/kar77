@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kartxxx | Profile</title>
+<meta name="description" content="kartxxx's personal profile — Discord, Spotify, Steam & more">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   0 · VARIABLES & RESET
+   ══════════════════════════════════════════ */
+:root {
+  --bg: #090a0f;
+  --card-bg: rgba(13, 15, 23, 0.6);
+  --card-border: rgba(255, 255, 255, 0.06);
+  --accent: #7c6cf0;
+  --accent-glow: rgba(124, 108, 240, 0.25);
+  --text: #f1f2f6;
+  --text-dim: #9094a6;
+  --text-muted: #585b73;
+  --online: #3ba55d;
+  --idle: #faa61a;
+  --dnd: #ed4245;
+  --offline: #747f8d;
+  --status-color: var(--offline);
+  --spotify-green: #1DB954;
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; overflow-x: hidden; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--bg);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  padding: 24px;
+  position: relative;
+  cursor: none;
+}
+
+/* ══════════════════════════════════════════
+   1 · PRELOADER — click-to-enter + glitch exit
+   ══════════════════════════════════════════ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #04060b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  cursor: default;
+}
+
+.preloader-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(
+    90deg,
+    var(--text-muted) 0%, var(--text) 20%,
+    var(--accent) 50%,
+    var(--text) 80%, var(--text-muted) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer-text 2.5s ease-in-out infinite;
+  user-select: none;
+}
+
+.preloader-enter {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-dim);
+  padding: 11px 32px;
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: pulse-border 2.5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preloader-enter svg {
+  width: 14px; height: 14px;
+  fill: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.preloader-enter:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 40px var(--accent-glow), 0 0 80px rgba(124, 108, 240, 0.12);
+  transform: scale(1.06);
+}
+
+.preloader-enter:hover svg { transform: translateX(2px); }
+
+@keyframes shimmer-text {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(255, 255, 255, 0.1); box-shadow: none; }
+  50%      { border-color: rgba(255, 255, 255, 0.3); box-shadow: 0 0 20px rgba(124, 108, 240, 0.08); }
+}
+
+/* Glitch-out exit */
+.preloader.exiting .preloader-name { animation: glitch-out 0.5s ease forwards; }
+.preloader.exiting .preloader-enter { animation: fade-down-out 0.3s ease forwards; }
+.preloader.exiting { animation: preloader-fade 0.6s ease 0.3s forwards; }
+
+@keyframes glitch-out {
+  0%   { transform: scale(1); filter: blur(0); opacity: 1; }
+  20%  { transform: scale(1.03) skewX(-4deg); text-shadow: 3px 0 #ff00ff, -3px 0 #00ffff; -webkit-text-fill-color: white; }
+  50%  { transform: scale(1.08) skewX(3deg); text-shadow: -5px 0 #ff00ff, 5px 0 #00ffff; filter: blur(1px); }
+  80%  { transform: scale(1.5); filter: blur(8px); opacity: 0.5; -webkit-text-fill-color: white; }
+  100% { transform: scale(2.5); filter: blur(24px); opacity: 0; }
+}
+
+@keyframes fade-down-out {
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+@keyframes preloader-fade {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* ══════════════════════════════════════════
+   2 · FLASH OVERLAY
+   ══════════════════════════════════════════ */
+.flash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(200, 180, 255, 0.95), rgba(124, 108, 240, 0.4) 50%, transparent 80%);
+}
+
+.flash-overlay.active { animation: flash-burst 0.7s ease-out forwards; }
+
+@keyframes flash-burst {
+  0%   { opacity: 0; transform: scale(0.8); }
+  25%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+
+/* ══════════════════════════════════════════
+   3 · VIDEO BACKGROUND
+   ══════════════════════════════════════════ */
+.yt-bg {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw; height: 56.25vw;
+  min-height: 100vh; min-width: 177.78vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.yt-bg video {
+  width: 100%; height: 100%;
+  border: none; object-fit: cover;
+  filter: contrast(1.12) brightness(0.92) saturate(1.15); /* Enhances details for HD pop */
+}
+
+.yt-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.2); /* Low opacity black overlay for depth */
+  z-index: 0;
+  pointer-events: none;
+}
+
+.yt-loading-mask {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.8s ease;
+}
+
+/* ══════════════════════════════════════════
+   4 · PARTICLES CANVAS
+   ══════════════════════════════════════════ */
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+body.revealed #particles { opacity: 1; }
+
+/* ══════════════════════════════════════════
+   5 · CUSTOM CURSOR
+   ══════════════════════════════════════════ */
+.custom-cursor {
+  position: fixed;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  mix-blend-mode: difference;
+}
+
+.custom-cursor.hovering {
+  width: 40px; height: 40px;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+}
+
+.cursor-dot {
+  position: fixed;
+  width: 5px; height: 5px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10001;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-glow {
+  position: fixed;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  will-change: left, top;
+}
+
+body.revealed .cursor-glow { opacity: 0.5; }
+
+@media (hover: none) and (pointer: coarse) {
+  body { cursor: auto; }
+  .custom-cursor, .cursor-dot, .cursor-glow { display: none !important; }
+}
+
+/* ══════════════════════════════════════════
+   6 · SOUND TOGGLE
+   ══════════════════════════════════════════ */
+.sound-toggle {
+  position: fixed;
+  top: 18px; right: 18px;
+  z-index: 5;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 17, 25, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  transition: all 0.25s ease;
+}
+
+.sound-toggle:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.08);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ══════════════════════════════════════════
+   7 · CREDIT TEXT
+   ══════════════════════════════════════════ */
+.credit-text {
+  position: fixed;
+  bottom: 12px; right: 16px;
+  z-index: 5;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ══════════════════════════════════════════
+   8 · PROFILE CARD + SPOTLIGHT
+   ══════════════════════════════════════════ */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg);
+  backdrop-filter: blur(28px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 32px 28px 24px;
+  position: relative;
+  z-index: 2;
+  box-shadow:
+    0 8px 36px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Conic gradient animated border */
+.card::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--border-angle), transparent 25%, var(--accent) 50%, transparent 75%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.35;
+  animation: rotate-border 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate-border { to { --border-angle: 360deg; } }
+
+.card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 128px;
+  pointer-events: none;
+}
+
+.card-spotlight {
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+.card:hover .card-spotlight { opacity: 1; }
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  margin: 16px 0;
+}
+
+/* ══════════════════════════════════════════
+   9 · AVATAR & GLOW RING
+   ══════════════════════════════════════════ */
+.avatar-wrap {
+  position: relative;
+  width: 120px; height: 120px;
+  margin: 0 auto 16px;
+}
+
+.avatar-glow-ring {
+  position: absolute; inset: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--status-color);
+  opacity: 0;
+  animation: ring-pulse 2.5s ease-in-out infinite;
+}
+
+.avatar-glow-ring::before {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  box-shadow: 0 0 18px 4px var(--status-color);
+  opacity: 0.4;
+  animation: ring-glow-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.015); }
+}
+
+@keyframes ring-glow-pulse {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 0.5; }
+}
+
+.avatar {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: none;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 3px; right: 3px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 4px solid rgba(13, 15, 23, 0.9);
+  background: var(--offline);
+  z-index: 2;
+  transition: background 0.3s ease;
+}
+
+.status-dot.online  { background: var(--online); }
+.status-dot.idle    { background: var(--idle); }
+.status-dot.dnd     { background: var(--dnd); }
+.status-dot.offline { background: var(--offline); }
+
+/* ══════════════════════════════════════════
+   10 · IDENTITY & VERIFIED BADGE
+   ══════════════════════════════════════════ */
+.name-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.big-name {
+  font-size: 28px;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  cursor: none;
+}
+
+.big-name:hover { animation: name-glitch 0.4s ease; }
+
+@keyframes name-glitch {
+  0%   { transform: translate(0); text-shadow: 0 2px 16px rgba(0,0,0,0.5); }
+  15%  { transform: translate(-2px, 1px); text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff, 0 2px 16px rgba(0,0,0,0.5); }
+  30%  { transform: translate(2px, -1px); text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff, 0 2px 16px rgba(0,0,0,0.5); }
+  45%  { transform: translate(-1px, 2px); text-shadow: 1px 0 #ff00ff, -1px 0 #00ffff, 0 2px 16px rgba(0,0,0,0.5); }
+  60%  { transform: translate(1px, -1px); text-shadow: -1px 0 #ff00ff, 1px 0 #00ffff, 0 2px 16px rgba(0,0,0,0.5); }
+  75%  { transform: translate(0, 1px); text-shadow: 0 2px 16px rgba(0,0,0,0.5); }
+  100% { transform: translate(0); text-shadow: 0 2px 16px rgba(0,0,0,0.5); }
+}
+
+.verified-badge {
+  display: inline-flex;
+  margin-left: 6px;
+  color: #7c6cf0;
+  filter: drop-shadow(0 0 6px rgba(124, 108, 240, 0.6));
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(124, 108, 240, 0.4)); }
+  50%      { filter: drop-shadow(0 0 10px rgba(124, 108, 240, 0.8)); }
+}
+
+.identity { text-align: center; margin-bottom: 16px; }
+
+.username {
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-dim);
+  margin: 0 0 8px;
+}
+
+.typewriter-bio {
+  font-size: 13px;
+  color: var(--accent);
+  min-height: 20px;
+  margin: 0 0 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tw-cursor { animation: blink 0.85s step-end infinite; color: var(--accent); }
+@keyframes blink { 50% { opacity: 0; } }
+
+.status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.status-label .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--offline);
+  transition: background 0.3s ease;
+}
+.status-label .dot.online { background: var(--online); }
+.status-label .dot.idle   { background: var(--idle); }
+.status-label .dot.dnd    { background: var(--dnd); }
+
+/* ══════════════════════════════════════════
+   11 · BADGES
+   ══════════════════════════════════════════ */
+.badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 10px 0 12px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+  transition: all 0.25s ease;
+  cursor: none;
+}
+
+.badge:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* ══════════════════════════════════════════
+   12 · BENTO GRID (GUNS.LOL STYLE)
+   ══════════════════════════════════════════ */
+.social-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 14px 0 6px;
+  width: 100%;
+}
+
+.bento-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  text-align: center;
+}
+
+.bento-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent);
+  pointer-events: none;
+}
+
+.bento-icon {
+  margin-bottom: 8px;
+  color: var(--text-dim);
+  transition: transform 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center; justify-content: center;
+}
+
+.bento-icon svg { width: 28px; height: 28px; }
+
+.bento-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+  transition: color 0.3s ease;
+}
+
+.bento-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Hover effects */
+.bento-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.bento-card:hover .bento-icon { transform: scale(1.1); color: #fff; }
+
+/* Tooltip standard guns.lol style */
+.bento-card::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 8px;
+  font-size: 9px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(4px);
+  pointer-events: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.bento-card:hover::after {
+  opacity: 0.85;
+  transform: translateY(0);
+}
+.bento-card:hover .bento-desc {
+  opacity: 0;
+}
+
+/* Card custom branding colors */
+.bento-card.discord-card:hover {
+  border-color: #5865F2;
+  box-shadow: 0 8px 24px rgba(88, 101, 242, 0.25);
+}
+.bento-card.discord-card:hover .bento-icon,
+.bento-card.discord-card:hover .bento-title { color: #5865F2; }
+
+.bento-card.instagram-card:hover {
+  border-color: #e1306c;
+  box-shadow: 0 8px 24px rgba(225, 48, 108, 0.25);
+}
+.bento-card.instagram-card:hover .bento-icon,
+.bento-card.instagram-card:hover .bento-title { color: #e1306c; }
+
+.bento-card.steam-card:hover {
+  border-color: #66c0f4;
+  box-shadow: 0 8px 24px rgba(102, 192, 244, 0.25);
+}
+.bento-card.steam-card:hover .bento-icon,
+.bento-card.steam-card:hover .bento-title { color: #66c0f4; }
+
+.bento-card.youtube-card:hover {
+  border-color: #ff0000;
+  box-shadow: 0 8px 24px rgba(255, 0, 0, 0.25);
+}
+.bento-card.youtube-card:hover .bento-icon,
+.bento-card.youtube-card:hover .bento-title { color: #ff0000; }
+
+/* ══════════════════════════════════════════
+   13 · SPOTIFY VINYL PLAYER
+   ══════════════════════════════════════════ */
+.spotify-widget {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(29, 185, 84, 0.05);
+  border: 1px solid rgba(29, 185, 84, 0.15);
+  margin: 12px 0 4px;
+  transition: border-color 0.3s ease;
+  cursor: none;
+  position: relative;
+}
+
+.spotify-widget:hover { border-color: rgba(29, 185, 84, 0.35); }
+
+.spotify-widget-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.spotify-widget-header svg { color: var(--spotify-green); flex-shrink: 0; }
+.spotify-widget-header span {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--spotify-green);
+}
+
+.eq-bars { display: flex; align-items: flex-end; gap: 2px; height: 11px; margin-left: auto; }
+.eq-bar { width: 2.5px; background: var(--spotify-green); border-radius: 1px; animation: eq-bounce 1s ease-in-out infinite; }
+.eq-bar:init { transform-origin: bottom; }
+.eq-bar:float { height: 100%; }
+.eq-bar:nth-child(1) { height: 4px; animation-delay: 0s; }
+.eq-bar:nth-child(2) { height: 8px; animation-delay: 0.15s; }
+.eq-bar:nth-child(3) { height: 6px; animation-delay: 0.3s; }
+.eq-bar:nth-child(4) { height: 10px; animation-delay: 0.45s; }
+
+@keyframes eq-bounce {
+  0%, 100% { transform: scaleY(0.4); }
+  50%      { transform: scaleY(1); }
+}
+
+/* Vinyl spindle setup */
+.spotify-vinyl-wrap {
+  position: relative;
+  width: 58px; height: 58px;
+  flex-shrink: 0;
+}
+
+.spotify-album-art {
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  border: 2px solid #0b0c10;
+  animation: vinyl-spin 4.5s linear infinite;
+  animation-play-state: paused;
+}
+
+.spotify-widget.playing .spotify-album-art { animation-play-state: running; }
+
+/* Vinyl spindle hole overlay */
+.spotify-vinyl-wrap::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  background: var(--card-bg);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 0 2px rgba(0,0,0,0.8);
+  z-index: 2;
+}
+
+@keyframes vinyl-spin { to { transform: rotate(360deg); } }
+
+.spotify-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.spotify-song { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+.spotify-artist { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+
+.spotify-progress-wrap { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.spotify-progress-bar { flex: 1; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+.spotify-progress-fill { height: 100%; border-radius: 3px; background: var(--spotify-green); transition: width 1s linear; }
+.spotify-time { font-size: 9px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); white-space: nowrap; }
+
+/* ══════════════════════════════════════════
+   14 · ACTIVITY SECTION
+   ══════════════════════════════════════════ */
+.section { text-align: center; margin-top: 8px; }
+.section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin: 0 0 10px; font-weight: 600; }
+
+.activity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.activity img {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.activity-text .a-name { font-size: 13px; font-weight: 600; margin: 0; }
+.activity-text .a-detail { font-size: 11px; color: var(--text-dim); margin: 2px 0 0; }
+.activity-text .a-elapsed { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); margin: 3px 0 0; }
+
+.empty { font-size: 11px; color: var(--text-muted); text-align: center; padding: 4px 0; }
+
+/* ══════════════════════════════════════════
+   15 · META PILLS ROW (VIEWS + CLOCK)
+   ══════════════════════════════════════════ */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.25s ease;
+}
+
+.pill-badge:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+}
+
+.pill-badge svg { color: var(--text-muted); }
+
+/* ══════════════════════════════════════════
+   16 · ENTRANCE ANIMATIONS
+   ══════════════════════════════════════════ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+body.revealed [data-reveal] {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.card {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.revealed .card {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ══════════════════════════════════════════
+   17 · CONFIG WARNING
+   ══════════════════════════════════════════ */
+.config-warning {
+  background: rgba(58,42,23,0.7);
+  border: 1px solid #6b4a1f;
+  color: #f5c884;
+  font-size: 12px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  backdrop-filter: blur(8px);
+}
+
+.config-warning code {
+  background: rgba(0,0,0,0.25);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ══════════════════════════════════════════
+   18 · RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  body { padding: 16px; cursor: auto; }
+  .card { max-width: 100%; padding: 24px 20px 20px; border-radius: 20px; }
+  .big-name { font-size: 24px; }
+  .avatar-wrap { width: 110px; height: 110px; }
+  .avatar { width: 110px; height: 110px; }
+  .social-grid { gap: 10px; }
+  .bento-card { padding: 14px 8px; border-radius: 12px; }
+  .bento-icon svg { width: 24px; height: 24px; }
+  .bento-title { font-size: 12px; }
+  .spotify-album-art, .spotify-vinyl-wrap { width: 48px; height: 48px; }
+  .preloader-name { font-size: 30px; }
+  .custom-cursor, .cursor-dot, .cursor-glow { display: none !important; }
+}
+
+@media (max-width: 360px) {
+  .social-grid { grid-template-columns: 1fr; } /* Stack to 1 column on small width */
+  .card { padding: 20px 14px 16px; }
+}
+
+/* ══════════════════════════════════════════
+   19 · SCROLLBAR
+   ══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+
+<!-- ═══ PRELOADER (click to enter) ═══ -->
+<div id="preloader" class="preloader">
+  <div class="preloader-name">kartxxx</div>
+  <button class="preloader-enter" id="enterBtn">
+    <span>Enter</span>
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+</div>
+
+<!-- ═══ FLASH TRANSITION ═══ -->
+<div class="flash-overlay" id="flashOverlay"></div>
+
+<!-- ═══ PARTICLES ═══ -->
+<canvas id="particles"></canvas>
+
+<!-- ═══ VIDEO BACKGROUND ═══ -->
+<div class="yt-bg">
+  <video id="bgVideo" src="bg-video.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback></video>
+</div>
+<div class="yt-overlay"></div>
+<div class="yt-loading-mask" id="ytLoadingMask"></div>
+
+<!-- ═══ CUSTOM CURSOR ═══ -->
+<div class="custom-cursor" id="customCursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ═══ SOUND TOGGLE ═══ -->
+<button id="soundToggle" class="sound-toggle" aria-label="Toggle sound" title="Toggle sound">
+  <svg id="soundIconOn" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a9 9 0 0 1 0 12"/></svg>
+  <svg id="soundIconOff" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M23 9 17 15"/><path d="M17 9l6 6"/></svg>
+</button>
+
+<!-- ═══ MAIN CARD ═══ -->
+<div class="card" id="mainCard">
+  <div class="card-spotlight" id="cardSpotlight"></div>
+  <div id="warning"></div>
+
+  <!-- Avatar -->
+  <div class="avatar-wrap" data-reveal style="--reveal-delay: 0.1s;">
+    <div class="avatar-glow-ring" id="avatarGlow"></div>
+    <img class="avatar" id="avatar" src="" alt="Avatar">
+    <div class="status-dot offline" id="statusDot"></div>
+  </div>
+
+  <!-- Display Name + Verified Badge -->
+  <div class="name-container" data-reveal style="--reveal-delay: 0.2s;">
+    <p class="big-name" id="bigDisplayName">Loading…</p>
+    <div class="verified-badge" title="Verified Profile">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+    </div>
+  </div>
+
+  <!-- Identity -->
+  <div class="identity" data-reveal style="--reveal-delay: 0.25s;">
+    <p class="username" id="username">@loading</p>
+    <p class="typewriter-bio"><span id="typewriterText"></span><span class="tw-cursor">|</span></p>
+    <div class="badges-row">
+      <span class="badge">🎮 Gamer</span>
+      <span class="badge">🛡️ Discord Mod</span>
+      <span class="badge">🌙 Night Owl</span>
+    </div>
+    <span class="status-label" id="statusLabel">
+      <span class="dot" id="statusLabelDot"></span>
+      <span id="statusText">Connecting</span>
+    </span>
+  </div>
+
+  <div class="divider" data-reveal style="--reveal-delay: 0.3s;"></div>
+
+  <!-- Bento Grid (Social Links) -->
+  <div class="social-grid" data-reveal style="--reveal-delay: 0.35s;">
+    <a href="https://discord.gg/QynH5FNbP" target="_blank" rel="noopener" class="bento-card discord-card" data-tooltip="Join my server">
+      <div class="bento-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.09-.32 13.68.099 18.21a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.128c-.598.35-1.22.645-1.873.892a.076.076 0 0 0-.04.106c.36.698.772 1.363 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.615a.06.06 0 0 0-.031-.028ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.094 2.157 2.418 0 1.334-.956 2.419-2.157 2.419Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.094 2.157 2.418 0 1.334-.946 2.419-2.157 2.419Z"/></svg>
+      </div>
+      <div class="bento-title">Discord</div>
+      <div class="bento-desc">Join Server</div>
+    </a>
+    <a href="https://www.instagram.com/kartuuxx_.07._?igsh=bjByOHBkaDkzc2g2" target="_blank" rel="noopener" class="bento-card instagram-card" data-tooltip="Follow me">
+      <div class="bento-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="bento-title">Instagram</div>
+      <div class="bento-desc">Follow Me</div>
+    </a>
+    <a href="https://steamcommunity.com/profiles/76561198769774602/" target="_blank" rel="noopener" class="bento-card steam-card" data-tooltip="View games">
+      <div class="bento-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658a3.386 3.386 0 0 1 1.912-.59c.064 0 .128.002.19.005l2.861-4.142v-.06c0-2.505 2.036-4.542 4.541-4.542 2.505 0 4.542 2.037 4.542 4.542 0 2.505-2.037 4.541-4.542 4.541h-.105l-4.076 2.911c.001.056.004.111.004.169 0 1.905-1.55 3.455-3.455 3.455-1.671 0-3.066-1.192-3.386-2.771L.5 15.4C1.98 20.397 6.514 24 11.979 24c6.627 0 12-5.373 12-12S18.606 0 11.979 0ZM7.54 18.21l-1.473-.609a2.588 2.588 0 0 0 4.771-.198L7.54 18.21Zm9.5-9.921a3.028 3.028 0 0 0-3.028-3.028 3.028 3.028 0 0 0-3.028 3.028 3.028 3.028 0 0 0 3.028 3.028 3.028 3.028 0 0 0 3.028-3.028Zm-5.302-.005a2.28 2.28 0 0 1 2.28-2.279 2.28 2.28 0 0 1 2.278 2.28 2.28 0 0 1-2.279 2.278 2.28 2.28 0 0 1-2.279-2.279Z"/></svg>
+      </div>
+      <div class="bento-title">Steam</div>
+      <div class="bento-desc">Steam profile</div>
+    </a>
+    <a href="https://youtube.com/@kartuuxx07?si=2jdxB9R6XScmr1kw" target="_blank" rel="noopener" class="bento-card youtube-card" data-tooltip="Watch videos">
+      <div class="bento-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.12C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.391.521A2.994 2.994 0 0 0 .502 6.186 31.26 31.26 0 0 0 0 12a31.26 31.26 0 0 0 .502 5.814 2.994 2.994 0 0 0 2.107 2.12c1.886.521 9.391.521 9.391.521s7.505 0 9.391-.521a2.994 2.994 0 0 0 2.107-2.12A31.26 31.26 0 0 0 24 12a31.26 31.26 0 0 0-.502-5.814ZM9.75 15.568V8.432L15.818 12l-6.068 3.568Z"/></svg>
+      </div>
+      <div class="bento-title">YouTube</div>
+      <div class="bento-desc">Subscribe</div>
+    </a>
+  </div>
+
+  <!-- Spotify Vinyl Player -->
+  <div class="spotify-widget" id="spotifyWidget" style="display: none;" data-reveal style="--reveal-delay: 0.45s;">
+    <div class="spotify-vinyl-wrap">
+      <img class="spotify-album-art" id="spotifyArt" src="" alt="Album art">
+    </div>
+    <div class="spotify-info">
+      <div class="spotify-widget-header">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm4.586 14.424a.622.622 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.622.622 0 1 1-.277-1.213c3.809-.871 7.077-.496 9.712 1.113a.622.622 0 0 1 .207.857Zm1.223-2.723a.779.779 0 0 1-1.071.257c-2.688-1.652-6.786-2.131-9.965-1.166a.779.779 0 1 1-.452-1.49c3.63-1.102 8.147-.568 11.23 1.328a.779.779 0 0 1 .258 1.07Z"/></svg>
+        <span>Listening on Spotify</span>
+        <div class="eq-bars">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+      </div>
+      <p class="spotify-song" id="spotifySong"></p>
+      <p class="spotify-artist" id="spotifyArtist"></p>
+      <div class="spotify-progress-wrap">
+        <span class="spotify-time" id="spotifyElapsed">0:00</span>
+        <div class="spotify-progress-bar"><div class="spotify-progress-fill" id="spotifyBar"></div></div>
+        <span class="spotify-time" id="spotifyDuration">0:00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity -->
+  <div class="section" id="activitySection" style="display:none;" data-reveal style="--reveal-delay: 0.5s;">
+    <p class="section-label">Currently doing</p>
+    <div class="activity" id="activityBody"></div>
+  </div>
+
+  <div class="divider" data-reveal style="--reveal-delay: 0.55s;"></div>
+
+  <!-- Meta Pills (Views + Clock) -->
+  <div class="stats-row" data-reveal style="--reveal-delay: 0.6s;">
+    <div class="pill-badge" title="Profile views">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span id="visitCount">--</span> views
+    </div>
+    <div class="pill-badge" title="Local timezone">
+      <div class="clock-dot"></div>
+      <span id="clock">--:--</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   PRELOADER + CLICK-TO-ENTER + AUDIO SETUP
+   ══════════════════════════════════════════ */
+const VIDEO_VOLUME = 0.4;
+const bgVideo = document.getElementById('bgVideo');
+bgVideo.volume = VIDEO_VOLUME;
+let soundOn = true;
+
+const preloader   = document.getElementById('preloader');
+const enterBtn    = document.getElementById('enterBtn');
+const flashEl     = document.getElementById('flashOverlay');
+const iconOn      = document.getElementById('soundIconOn');
+const iconOff     = document.getElementById('soundIconOff');
+
+enterBtn.addEventListener('click', () => {
+  // Unmute and play video sound
+  bgVideo.muted = false;
+  bgVideo.volume = VIDEO_VOLUME;
+  bgVideo.play().catch(() => {});
+  soundOn = true;
+  iconOn.style.display  = 'block';
+  iconOff.style.display = 'none';
+
+  // Glitch exit preloader
+  preloader.classList.add('exiting');
+
+  // Flash burst reveal
+  setTimeout(() => flashEl.classList.add('active'), 250);
+
+  // Reveal main page content
+  setTimeout(() => {
+    preloader.style.display = 'none';
+    document.body.classList.add('revealed');
+    setTimeout(enableCardTilt, 900);
+  }, 500);
+});
+
+/* ══════════════════════════════════════════
+   VIDEO STATUS MASK
+   ══════════════════════════════════════════ */
+const loadingMask = document.getElementById('ytLoadingMask');
+bgVideo.addEventListener('playing', () => loadingMask.style.opacity = '0');
+bgVideo.addEventListener('waiting', () => loadingMask.style.opacity = '1');
+bgVideo.addEventListener('pause',   () => loadingMask.style.opacity = '1');
+
+/* ══════════════════════════════════════════
+   SOUND TOGGLE
+   ══════════════════════════════════════════ */
+document.getElementById('soundToggle').addEventListener('click', () => {
+  soundOn = !soundOn;
+  bgVideo.muted = !soundOn;
+  if (soundOn) bgVideo.volume = VIDEO_VOLUME;
+  iconOn.style.display  = soundOn ? 'block' : 'none';
+  iconOff.style.display = soundOn ? 'none'  : 'block';
+});
+
+/* ══════════════════════════════════════════
+   CUSTOM CURSOR & TRAILING GLOW
+   ══════════════════════════════════════════ */
+(function () {
+  const cursor   = document.getElementById('customCursor');
+  const dot      = document.getElementById('cursorDot');
+  const glow     = document.getElementById('cursorGlow');
+  const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+  if (isTouchDevice) {
+    cursor.style.display = 'none';
+    dot.style.display = 'none';
+    glow.style.display = 'none';
+    document.body.style.cursor = 'auto';
+    return;
+  }
+
+  let mx = 0, my = 0;
+  let cx = 0, cy = 0; // ring position (lerped)
+  let gx = 0, gy = 0; // glow position (lerped slower)
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+  });
+
+  const hoverSelectors = 'a, button, .badge, .avatar, .bento-card, .spotify-widget';
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest(hoverSelectors)) cursor.classList.add('hovering');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest(hoverSelectors)) cursor.classList.remove('hovering');
+  });
+
+  function animateCursor() {
+    cx += (mx - cx) * 0.15;
+    cy += (my - cy) * 0.15;
+    cursor.style.left = cx + 'px';
+    cursor.style.top  = cy + 'px';
+
+    gx += (mx - gx) * 0.06;
+    gy += (my - gy) * 0.06;
+    glow.style.left = gx + 'px';
+    glow.style.top  = gy + 'px';
+
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  window.cursorCoords = { get x() { return mx; }, get y() { return my; } };
+})();
+
+/* ══════════════════════════════════════════
+   FLOATING CANVAS PARTICLES (MOUSE GRAVITY)
+   ══════════════════════════════════════════ */
+(function () {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let w, h;
+
+  function resize() {
+    w = canvas.width  = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    const count = Math.min(75, Math.floor((w * h) / 20000));
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.6 + 0.4,
+      baseAlpha: Math.random() * 0.5 + 0.15,
+      speed: Math.random() * 0.25 + 0.05,
+      angle: Math.random() * Math.PI * 2,
+      drift: (Math.random() - 0.5) * 0.002,
+      twinkleSpeed: Math.random() * 0.015 + 0.005,
+      twinklePhase: Math.random() * Math.PI * 2,
+    }));
+  }
+
+  function tick(t) {
+    ctx.clearRect(0, 0, w, h);
+    const mx = window.cursorCoords ? window.cursorCoords.x : null;
+    const my = window.cursorCoords ? window.cursorCoords.y : null;
+
+    for (const p of particles) {
+      p.angle += p.drift;
+      
+      let vx = Math.cos(p.angle) * p.speed;
+      let vy = Math.sin(p.angle) * p.speed;
+
+      // Mouse gravity attraction
+      if (mx !== null && my !== null && document.body.classList.contains('revealed') && window.innerWidth > 480) {
+        const dx = mx - p.x;
+        const dy = my - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 280) {
+          const force = (280 - dist) / 280;
+          vx += (dx / dist) * force * 0.35;
+          vy += (dy / dist) * force * 0.35;
+        }
+      }
+
+      p.x += vx;
+      p.y += vy;
+
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+      if (p.y < -10) p.y = h + 10;
+      if (p.y > h + 10) p.y = -10;
+
+      const alpha = p.baseAlpha + Math.sin(t * p.twinkleSpeed + p.twinklePhase) * 0.2;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 190, 255, ${Math.max(0, Math.min(1, alpha))})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(tick);
+})();
+
+/* ══════════════════════════════════════════
+   CARD 3D TILT EFFECT
+   ══════════════════════════════════════════ */
+function enableCardTilt() {
+  const card      = document.getElementById('mainCard');
+  const spotlight = document.getElementById('cardSpotlight');
+  const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  if (isTouchDevice) return;
+
+  card.style.transition = 'transform 0.12s ease-out';
+
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width  - 0.5;
+    const y = (e.clientY - rect.top)  / rect.height - 0.5;
+
+    card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+    spotlight.style.background = `radial-gradient(circle at ${sx}px ${sy}px, rgba(255,255,255,0.05), transparent 50%)`;
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(800px) rotateY(0) rotateX(0) scale(1)';
+  });
+}
+
+/* ══════════════════════════════════════════
+   TYPEWRITER BIO TEXT
+   ══════════════════════════════════════════ */
+(function () {
+  const phrases = ["Gamer", "Discord Mod", "Night Owl", "kartxxx"];
+  const el = document.getElementById('typewriterText');
+  let phraseIdx = 0, charIdx = 0, deleting = false;
+
+  function tick() {
+    const current = phrases[phraseIdx];
+    if (!deleting) {
+      charIdx++;
+      el.textContent = current.slice(0, charIdx);
+      if (charIdx === current.length) { deleting = true; return setTimeout(tick, 1600); }
+    } else {
+      charIdx--;
+      el.textContent = current.slice(0, charIdx);
+      if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+    }
+    setTimeout(tick, deleting ? 40 : 85);
+  }
+  tick();
+})();
+
+/* ══════════════════════════════════════════
+   LOCAL CLOCK (IST)
+   ══════════════════════════════════════════ */
+(function () {
+  const clockEl = document.getElementById('clock');
+  function update() {
+    const opts = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' };
+    clockEl.textContent = new Date().toLocaleString('en-IN', opts).toUpperCase() + ' IST';
+  }
+  update();
+  setInterval(update, 10000);
+})();
+
+/* ══════════════════════════════════════════
+   VISIT VISUAL VIEWS COUNTER
+   ══════════════════════════════════════════ */
+(function () {
+  const countEl = document.getElementById('visitCount');
+  let count = localStorage.getItem('kart_views');
+  if (!count) {
+    count = Math.floor(Math.random() * 400) + 1850;
+  } else {
+    count = parseInt(count) + 1;
+  }
+  localStorage.setItem('kart_views', count);
+  countEl.textContent = count.toLocaleString();
+})();
+
+/* ══════════════════════════════════════════
+   THEME COLOR DYNAMIC EXTRACTION
+   ══════════════════════════════════════════ */
+function extractThemeColor(imgUrl) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function () {
+    try {
+      const canvas = document.createElement('canvas');
+      const s = 40;
+      canvas.width = s; canvas.height = s;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, s, s);
+      const d = ctx.getImageData(0, 0, s, s).data;
+
+      let r=0, g=0, b=0, c=0;
+      for (let i=0; i<d.length; i+=4) {
+        if (d[i+3]<200) continue;
+        r+=d[i]; g+=d[i+1]; b+=d[i+2]; c++;
+      }
+      if (!c) return;
+      r=Math.round(r/c); g=Math.round(g/c); b=Math.round(b/c);
+
+      const max = Math.max(r,g,b);
+      const boost = max>0 ? Math.min(1.4, 235/max) : 1;
+      r=Math.min(255,Math.round(r*boost));
+      g=Math.min(255,Math.round(g*boost));
+      b=Math.min(255,Math.round(b*boost));
+
+      document.documentElement.style.setProperty('--accent', `rgb(${r},${g},${b})`);
+      document.documentElement.style.setProperty('--accent-glow', `rgba(${r},${g},${b},0.25)`);
+
+      const overlay = document.querySelector('.yt-overlay');
+      if (overlay) overlay.style.background = `radial-gradient(circle at 30% 20%, rgba(${r},${g},${b},0.12), rgba(0,0,0,0.55) 75%)`;
+    } catch(e){}
+  };
+  img.src = imgUrl;
+}
+
+/* ══════════════════════════════════════════
+   LANYARD: PRESENCE & SPOTIFY SYNC
+   ══════════════════════════════════════════ */
+const DISCORD_USER_ID = "1421713832363163799";
+const REFRESH_MS = 15000;
+
+const el = {
+  avatar:          document.getElementById('avatar'),
+  statusDot:       document.getElementById('statusDot'),
+  displayName:     document.getElementById('bigDisplayName'),
+  username:        document.getElementById('username'),
+  statusLabelDot:  document.getElementById('statusLabelDot'),
+  statusText:      document.getElementById('statusText'),
+  activitySection: document.getElementById('activitySection'),
+  activityBody:    document.getElementById('activityBody'),
+  warning:         document.getElementById('warning'),
+  spotifyWidget:   document.getElementById('spotifyWidget'),
+  spotifySong:     document.getElementById('spotifySong'),
+  spotifyArtist:   document.getElementById('spotifyArtist'),
+  spotifyArt:      document.getElementById('spotifyArt'),
+  spotifyBar:      document.getElementById('spotifyBar'),
+  spotifyElapsed:  document.getElementById('spotifyElapsed'),
+  spotifyDuration: document.getElementById('spotifyDuration'),
+};
+
+const STATUS_META = {
+  online:  { label: 'Online',         cls: 'online',  color: 'var(--online)' },
+  idle:    { label: 'Idle',           cls: 'idle',    color: 'var(--idle)' },
+  dnd:     { label: 'Do Not Disturb', cls: 'dnd',     color: 'var(--dnd)' },
+  offline: { label: 'Offline',        cls: 'offline', color: 'var(--offline)' },
+};
+
+function showConfigWarning() {
+  el.warning.innerHTML = `<div class="config-warning">Set your Discord user ID in the script. Join <a href="https://discord.gg/lanyard" target="_blank" rel="noopener" style="color:#f5c884;">Lanyard</a> for live status.</div>`;
+  el.displayName.textContent = "Set up required";
+  el.username.textContent = "@configure-your-id";
+}
+
+function fmtMs(ms) {
+  const s = Math.floor(ms/1000);
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+
+function fmtElapsed(startMs) {
+  const mins = Math.floor((Date.now()-startMs)/60000);
+  if (mins < 60) return `${mins}m elapsed`;
+  return `${Math.floor(mins/60)}h ${mins%60}m elapsed`;
+}
+
+let spotifyInterval = null;
+
+function updateSpotifyProgress(start, end) {
+  if (spotifyInterval) clearInterval(spotifyInterval);
+  function tick() {
+    const elapsed = Math.max(0, Date.now()-start);
+    const total   = end - start;
+    el.spotifyBar.style.width = Math.min(100, (elapsed/total)*100) + '%';
+    el.spotifyElapsed.textContent  = fmtMs(elapsed);
+    el.spotifyDuration.textContent = fmtMs(total);
+  }
+  tick();
+  spotifyInterval = setInterval(tick, 1000);
+}
+
+function renderPresence(data) {
+  const user   = data.discord_user;
+  const status = STATUS_META[data.discord_status] || STATUS_META.offline;
+
+  el.avatar.src = user.avatar
+    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
+    : `https://cdn.discordapp.com/embed/avatars/0.png`;
+
+  el.displayName.textContent = user.global_name || user.username;
+  el.username.textContent    = '@' + user.username;
+
+  el.statusDot.className      = 'status-dot ' + status.cls;
+  el.statusLabelDot.className = 'dot ' + status.cls;
+  el.statusText.textContent   = status.label;
+  document.documentElement.style.setProperty('--status-color', status.color);
+
+  /* Spotify Sync */
+  if (data.spotify) {
+    const sp = data.spotify;
+    el.spotifySong.textContent   = sp.song || 'Unknown';
+    el.spotifyArtist.textContent = sp.artist || 'Unknown';
+    el.spotifyArt.src            = sp.album_art_url || '';
+    el.spotifyWidget.style.display = 'flex';
+    el.spotifyWidget.classList.add('playing');
+    updateSpotifyProgress(sp.timestamps.start, sp.timestamps.end);
+    extractThemeColor(sp.album_art_url);
+  } else {
+    el.spotifyWidget.style.display = 'none';
+    el.spotifyWidget.classList.remove('playing');
+    if (spotifyInterval) { clearInterval(spotifyInterval); spotifyInterval = null; }
+  }
+
+  /* Game presence */
+  const activities = (data.activities || []).filter(a => a.type !== 4 && a.type !== 2);
+
+  if (activities.length > 0) {
+    const a = activities[0];
+    let imgSrc = '';
+    if (a.assets && a.assets.large_image) {
+      const img = a.assets.large_image;
+      imgSrc = img.startsWith('mp:')
+        ? `https://media.discordapp.net/${img.replace('mp:','')}`
+        : `https://cdn.discordapp.com/app-assets/${a.application_id}/${img}.png`;
+    }
+    const elapsed = a.timestamps && a.timestamps.start
+      ? `<p class="a-elapsed">⏱ ${fmtElapsed(a.timestamps.start)}</p>` : '';
+
+    el.activityBody.innerHTML = `
+      ${imgSrc ? `<img src="${imgSrc}" alt="">` : ''}
+      <div class="activity-text">
+        <p class="a-name">${a.name || 'Unknown'}</p>
+        ${a.details ? `<p class="a-detail">${a.details}</p>` : ''}
+        ${a.state   ? `<p class="a-detail">${a.state}</p>`   : ''}
+        ${elapsed}
+      </div>`;
+    el.activitySection.style.display = 'block';
+  } else if (!data.spotify) {
+    el.activityBody.innerHTML = `<p class="empty">Not doing anything right now</p>`;
+    el.activitySection.style.display = 'block';
+  } else {
+    el.activitySection.style.display = 'none';
+  }
+}
+
+async function fetchPresence() {
+  try {
+    const res  = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+    const json = await res.json();
+    if (!json.success) throw new Error('Lanyard lookup failed');
+    renderPresence(json.data);
+  } catch (err) {
+    el.displayName.textContent = "Couldn't load profile";
+    el.username.textContent    = "Check Discord ID / Lanyard";
+    console.error(err);
+  }
+}
+
+if (!DISCORD_USER_ID || DISCORD_USER_ID === "REPLACE_WITH_YOUR_DISCORD_USER_ID") {
+  showConfigWarning();
+} else {
+  fetchPresence();
+  setInterval(fetchPresence, REFRESH_MS);
+}
+
+/* Spotify fallback cover oEmbed color logic */
+(function () {
+  const TRACK_URL = "https://open.spotify.com/track/7etchTu0yJDGvk55gIQADV";
+  fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(TRACK_URL)}`)
+    .then(r => r.json())
+    .then(d => { if (d.thumbnail_url) extractThemeColor(d.thumbnail_url); })
+    .catch(() => {});
+})();
+</script>
+</body>
+</html>
