@@ -715,6 +715,16 @@ body.revealed .cursor-glow { opacity: 0.5; }
 .bento-card.youtube-card:hover .bento-icon,
 .bento-card.youtube-card:hover .bento-title { color: #ff0000; }
 
+.bento-card.games-card {
+  grid-column: span 2;
+}
+.bento-card.games-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+.bento-card.games-card:hover .bento-icon,
+.bento-card.games-card:hover .bento-title { color: var(--accent); }
+
 /* ══════════════════════════════════════════
    13 · SPOTIFY VINYL PLAYER
    ══════════════════════════════════════════ */
@@ -1051,6 +1061,13 @@ body.revealed .card {
       </div>
       <div class="bento-title">YouTube</div>
       <div class="bento-desc">Subscribe</div>
+    </a>
+    <a href="games.html" class="bento-card games-card" data-tooltip="My Completed Games">
+      <div class="bento-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg>
+      </div>
+      <div class="bento-title">Completed Games</div>
+      <div class="bento-desc">My Hall of Fame</div>
     </a>
   </div>
 
