@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@kartxxx07 | guns.lol</title>
+  <link rel="icon" type="image/png" href="https://r2.guns.lol/ae275bf1-5a63-4d4a-bd00-b8858c3e64d8.png" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --font-main: 'Satoshi', 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.72);
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --card-bg: rgba(14, 14, 20, 0.48);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: url('https://r2.guns.lol/ae275bf1-5a63-4d4a-bd00-b8858c3e64d8.png'), auto !important;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      overflow: hidden;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .guns-app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Background video */
+    .guns-bg-video-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .guns-bg-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02);
+    }
+
+    .guns-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.75) 100%);
+      pointer-events: none;
+    }
+
+    /* Canvases */
+    canvas.snow-canvas, canvas.cursor-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+    canvas.snow-canvas { z-index: 2; }
+    canvas.cursor-canvas { z-index: 5; }
+
+    /* Click to enter overlay */
+    .click-to-enter {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background-color: rgba(5, 5, 8, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+      cursor: pointer !important;
+    }
+
+    .click-to-enter.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .click-prompt {
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+
+    .click-prompt .bracket { color: rgba(255, 255, 255, 0.4); }
+    .click-prompt .text {
+      text-transform: lowercase;
+      font-weight: 500;
+      text-shadow: 0 0 16px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.6; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+
+    /* Volume control pill */
+    .volume-widget {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(18, 18, 18, 0.55);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      padding: 8px 14px;
+      transition: all 0.3s ease;
+    }
+
+    .volume-widget:hover {
+      background: rgba(25, 25, 25, 0.75);
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .volume-icon-btn {
+      color: #ffffff;
+      font-size: 0.9rem;
+      background: none;
+      border: none;
+      opacity: 0.85;
+      cursor: pointer;
+    }
+
+    .volume-slider-track {
+      position: relative;
+      width: 70px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .volume-slider-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 9999px;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+    }
+
+    .volume-slider-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer !important;
+    }
+
+    .volume-percent {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      min-width: 30px;
+      text-align: right;
+    }
+
+    /* Main Card Stage */
+    .guns-main-stage {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .guns-card-container {
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      perspective: 1000px;
+      transform-style: preserve-3d;
+    }
+
+    .guns-card-ambient-aura {
+      display: none;
+    }
+
+    .guns-card {
+      position: relative;
+      width: 100%;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border: none;
+      border-radius: 26px;
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: none;
+      transform-style: preserve-3d;
+      will-change: transform;
+      animation: cardFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .guns-card-glare {
+      display: none;
+    }
+
+    /* Gear button for setting Discord ID */
+    .discord-id-config-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      z-index: 25;
+    }
+
+    .discord-id-config-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+      transform: rotate(45deg);
+    }
+
+    .discord-id-form {
+      width: 100%;
+      background: rgba(10, 10, 15, 0.95);
+      border: 1px solid rgba(88, 101, 242, 0.5);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: left;
+      z-index: 25;
+      display: none;
+    }
+    .discord-id-form.active { display: block; }
+
+    .form-inner label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .form-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .form-input-row input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #ffffff;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .form-input-row button {
+      background: #5865f2;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .form-help {
+      font-size: 0.68rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 6px;
+      display: block;
+    }
+    .form-help a { color: #5865f2; text-decoration: underline; }
+
+    /* Fully Rounded Avatar */
+    .guns-avatar-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+      width: 105px;
+      height: 105px;
+      transform: translateZ(20px);
+    }
+
+    .guns-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .guns-avatar-img:hover { transform: scale(1.06) rotate(3deg); }
+
+    .guns-avatar-decoration {
+      position: absolute;
+      top: -12%;
+      left: -12%;
+      width: 124%;
+      height: 124%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .avatar-status-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #121218;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #121218;
+      z-index: 3;
+    }
+
+    .status-badge-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #23a55a;
+      box-shadow: 0 0 10px rgba(35, 165, 90, 0.9);
+    }
+    .avatar-status-badge.idle .status-badge-dot { background: #f0b232; box-shadow: 0 0 10px rgba(240, 178, 50, 0.9); }
+    .avatar-status-badge.dnd .status-badge-dot { background: #f23f43; box-shadow: 0 0 10px rgba(242, 63, 67, 0.9); }
+    .avatar-status-badge.offline .status-badge-dot { background: #80848e; box-shadow: none; }
+
+    /* Display Name with Neon Glow */
+    .guns-name-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      cursor: pointer;
+      transform: translateZ(15px);
+    }
+
+    .guns-display-name {
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4), 0 0 35px rgba(255, 255, 255, 0.2);
+    }
+
+    .guns-verified-badge { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8)); }
+
+    .guns-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18, 18, 22, 0.95);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 50;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+    .guns-name-row:hover .guns-tooltip,
+    .guns-location:hover .guns-tooltip { opacity: 1; }
+
+    /* Badges */
+    .guns-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      transform: translateZ(12px);
+    }
+
+    .guns-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .guns-badge:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px) scale(1.15);
+    }
+
+    .guns-custom-status {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-top: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: none;
+    }
+
+    .guns-bio {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 8px;
+      letter-spacing: 0.2px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+    }
+
+    .guns-location {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.55);
+      margin-top: 10px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    /* Discord Box */
+    .guns-discord-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      transition: all 0.3s ease;
+    }
+
+    .discord-box-icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #5865f2, #4752c4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 14px rgba(88, 101, 242, 0.4);
+    }
+
+    .discord-box-content { flex: 1; min-width: 0; }
+    .discord-box-user { display: flex; align-items: center; gap: 8px; }
+    .discord-name { font-size: 0.92rem; font-weight: 600; color: #ffffff; }
+
+    .discord-status-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #23a55a;
+      background: rgba(35, 165, 90, 0.15);
+      border: 1px solid rgba(35, 165, 90, 0.3);
+    }
+
+    .discord-box-activity { display: flex; flex-direction: column; margin-top: 3px; }
+    .activity-title { font-size: 0.78rem; color: rgba(255, 255, 255, 0.85); font-weight: 500; }
+    .activity-detail { font-size: 0.7rem; color: rgba(255, 255, 255, 0.45); }
+
+    /* Spotify Live Box */
+    .guns-spotify-live-box {
+      width: 100%;
+      background: rgba(30, 215, 96, 0.08);
+      border: 1px solid rgba(30, 215, 96, 0.25);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 18px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+    }
+    .guns-spotify-live-box.active { display: flex; }
+
+    .spotify-live-cover {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .spotify-live-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+    .spotify-live-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .spotify-live-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #1db954;
+      letter-spacing: 0.8px;
+    }
+    .spotify-live-song {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .spotify-live-artist {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.6);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Vinyl Music Visualizer Pill */
+    .music-player-pill {
+      width: 100%;
+      background: rgba(20, 20, 25, 0.45);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .music-player-pill:hover {
+      background: rgba(25, 25, 32, 0.65);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .vinyl-record {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #2a2a35 0%, #0d0d12 70%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .vinyl-record.spinning { animation: spinRecord 4s linear infinite; }
+    @keyframes spinRecord { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .vinyl-grooves {
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .vinyl-center {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      border: 2px solid #0d0d12;
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.8);
+    }
+
+    .music-pill-details { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .music-pill-top { display: flex; align-items: center; justify-content: space-between; }
+    .music-track-info { display: flex; flex-direction: column; text-align: left; }
+    .track-title { font-size: 0.86rem; font-weight: 600; color: #ffffff; }
+    .track-status { font-size: 0.65rem; text-transform: uppercase; color: #a855f7; font-weight: 700; letter-spacing: 0.8px; }
+
+    .music-pill-play-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    .music-pill-play-btn:hover { background: #ffffff; color: #000000; transform: scale(1.1); }
+
+    .music-scrubber-track {
+      position: relative;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      cursor: pointer;
+    }
+    .music-scrubber-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #a855f7, #ec4899);
+      border-radius: 9999px;
+    }
+
+    .music-pill-bottom { display: flex; align-items: center; justify-content: space-between; }
+    .music-time { font-size: 0.65rem; color: rgba(255, 255, 255, 0.45); }
+
+    .music-equalizer { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+    .music-equalizer span {
+      width: 2px;
+      background: #ffffff;
+      border-radius: 1px;
+      height: 2px;
+      opacity: 0.5;
+    }
+    .music-equalizer.active span:nth-child(1) { animation: eqBar 0.6s ease-in-out infinite 0.1s; opacity: 1; }
+    .music-equalizer.active span:nth-child(2) { animation: eqBar 0.8s ease-in-out infinite 0.3s; opacity: 1; }
+    .music-equalizer.active span:nth-child(3) { animation: eqBar 0.5s ease-in-out infinite 0.2s; opacity: 1; }
+    .music-equalizer.active span:nth-child(4) { animation: eqBar 0.7s ease-in-out infinite 0.4s; opacity: 1; }
+    .music-equalizer.active span:nth-child(5) { animation: eqBar 0.6s ease-in-out infinite 0.15s; opacity: 1; }
+    .music-equalizer.active span:nth-child(6) { animation: eqBar 0.9s ease-in-out infinite 0.25s; opacity: 1; }
+    @keyframes eqBar { 0%, 100% { height: 3px; } 50% { height: 11px; } }
+
+    /* Socials */
+    .guns-socials-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .guns-social-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.15rem;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .guns-social-icon:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-4px) scale(1.1);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    .guns-views-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 20px;
+    }
+
+    /* Bottom Quick Controls Dock */
+    .guns-bottom-dock {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(18, 18, 22, 0.55);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      padding: 6px 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .dock-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .dock-btn:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
+    .dock-btn.active { color: #a855f7; background: rgba(168, 85, 247, 0.15); }
+  </style>
+</head>
+<body>
+
+  <div class="guns-app">
+    <!-- Background Video -->
+    <div class="guns-bg-video-wrapper">
+      <video
+        id="bgVideo"
+        class="guns-bg-video"
+        src="./background.mp4"
+        loop
+        muted
+        playsinline
+        autoplay
+      ></video>
+      <div class="guns-bg-overlay"></div>
+    </div>
+
+    <!-- Snowflakes Canvas -->
+    <canvas id="snowCanvas" class="snow-canvas"></canvas>
+
+    <!-- Stardust Cursor Canvas -->
+    <canvas id="cursorCanvas" class="cursor-canvas"></canvas>
+
+    <!-- Click To Enter Overlay -->
+    <div id="clickToEnter" class="click-to-enter">
+      <div class="click-prompt">
+        <span class="bracket">[</span>
+        <span class="text">click anywhere to enter</span>
+        <span class="bracket">]</span>
+      </div>
+    </div>
+
+    <!-- Volume Control -->
+    <div class="volume-widget">
+      <button id="volBtn" class="volume-icon-btn"><i class="fa-solid fa-volume-high"></i></button>
+      <div class="volume-slider-track">
+        <div id="volFill" class="volume-slider-fill" style="width: 60%"></div>
+        <input type="range" id="volInput" class="volume-slider-input" min="0" max="100" value="60">
+      </div>
+      <span id="volText" class="volume-percent">60%</span>
+    </div>
+
+    <!-- Main Card Stage -->
+    <main class="guns-main-stage">
+      <div id="cardContainer" class="guns-card-container">
+        <div id="cardAura" class="guns-card-ambient-aura"></div>
+        <div id="card" class="guns-card">
+          <div id="cardGlare" class="guns-card-glare"></div>
+
+          <!-- Gear button -->
+          <button id="gearBtn" class="discord-id-config-btn" title="Connect Discord ID"><i class="fa-solid fa-gear"></i></button>
+
+          <!-- Form to change Discord ID -->
+          <form id="discordIdForm" class="discord-id-form">
+            <div class="form-inner">
+              <label>Enter your numerical Discord User ID:</label>
+              <div class="form-input-row">
+                <input type="text" id="discordIdInput" placeholder="e.g. 1007140362789330944" />
+                <button type="submit">Sync</button>
+              </div>
+              <span class="form-help">Join <a href="https://discord.gg/lanyard" target="_blank">discord.gg/lanyard</a> once to enable live sync!</span>
+            </div>
+          </form>
+
+          <!-- Avatar -->
+          <div class="guns-avatar-wrapper">
+            <img id="avatarImg" class="guns-avatar-img" src="./avatar.webp" alt="Avatar" />
+            <img id="avatarDeco" class="guns-avatar-decoration" style="display:none;" />
+            <div id="statusBadge" class="avatar-status-badge online">
+              <span class="status-badge-dot"></span>
+            </div>
+          </div>
+
+          <!-- Display Name -->
+          <div class="guns-name-row">
+            <h1 id="displayName" class="guns-display-name">kartxxx07</h1>
+            <svg class="guns-verified-badge" viewBox="0 0 24 24" width="22" height="22">
+              <path fill="#3b82f6" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <div id="uidTooltip" class="guns-tooltip">UID 7,007,777</div>
+          </div>
+
+          <!-- Badges -->
+          <div class="guns-badges-row">
+            <div class="guns-badge" style="color:#5865f2"><i class="fa-solid fa-code"></i></div>
+            <div class="guns-badge" style="color:#f47fff"><i class="fa-solid fa-bolt"></i></div>
+            <div class="guns-badge" style="color:#f47fff"><i class="fa-brands fa-discord"></i></div>
+            <div class="guns-badge" style="color:#ff73fa"><i class="fa-solid fa-gem"></i></div>
+          </div>
+
+          <!-- Custom Status -->
+          <p id="customStatus" class="guns-custom-status"></p>
+
+          <!-- Bio -->
+          <p class="guns-bio">Developer 💻 &nbsp;|&nbsp; Gamer 🎮 &nbsp;|&nbsp; Otaku ⛩️</p>
+
+          <!-- Location -->
+          <div class="guns-location">
+            <i class="fa-solid fa-location-dot location-icon"></i>
+            <span>India 🇮🇳</span>
+            <div class="guns-tooltip">Location</div>
+          </div>
+
+          <!-- Discord Box -->
+          <div id="discordBox" class="guns-discord-box">
+            <div class="discord-box-icon"><i class="fa-brands fa-discord"></i></div>
+            <div class="discord-box-content">
+              <div class="discord-box-user">
+                <span id="discordTag" class="discord-name">@kartxxx07</span>
+                <span id="discordStatusTag" class="discord-status-tag">online</span>
+              </div>
+              <div class="discord-box-activity">
+                <span id="activityTitle" class="activity-title">Live Discord Sync Active</span>
+                <span id="activityDetail" class="activity-detail">Connected via Lanyard API</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spotify Live Box -->
+          <div id="spotifyLiveBox" class="guns-spotify-live-box">
+            <div class="spotify-live-cover">
+              <img id="spotifyArt" src="" alt="Album Art" />
+            </div>
+            <div class="spotify-live-info">
+              <div class="spotify-live-header">
+                <i class="fa-brands fa-spotify"></i>
+                <span>Listening to Spotify</span>
+              </div>
+              <span id="spotifySong" class="spotify-live-song"></span>
+              <span id="spotifyArtist" class="spotify-live-artist"></span>
+            </div>
+          </div>
+
+          <!-- Music Player Pill -->
+          <div class="music-player-pill">
+            <div id="vinylRecord" class="vinyl-record">
+              <div class="vinyl-grooves"></div>
+              <div class="vinyl-center"></div>
+            </div>
+            <div class="music-pill-details">
+              <div class="music-pill-top">
+                <div class="music-track-info">
+                  <span class="track-title">Bengier kurwy v3</span>
+                  <span id="trackStatus" class="track-status">Paused</span>
+                </div>
+                <button id="playBtn" class="music-pill-play-btn"><i class="fa-solid fa-play"></i></button>
+              </div>
+              <div id="scrubberTrack" class="music-scrubber-track">
+                <div id="scrubberFill" class="music-scrubber-fill"></div>
+              </div>
+              <div class="music-pill-bottom">
+                <span id="currTime" class="music-time">0:00</span>
+                <div id="equalizer" class="music-equalizer">
+                  <span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <span id="durTime" class="music-time">5:02</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Socials -->
+          <div class="guns-socials-row">
+            <a href="https://discord.com/users/kartxxx07" id="socialDiscord" target="_blank" class="guns-social-icon" title="Discord"><i class="fa-brands fa-discord"></i></a>
+            <a href="https://github.com/kartxxx07" target="_blank" class="guns-social-icon" title="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="https://steamcommunity.com/id/kartxxx07" target="_blank" class="guns-social-icon" title="Steam"><i class="fa-brands fa-steam"></i></a>
+            <a href="https://open.spotify.com/" target="_blank" class="guns-social-icon" title="Spotify"><i class="fa-brands fa-spotify"></i></a>
+            <a href="https://instagram.com/kartxxx07" target="_blank" class="guns-social-icon" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+
+          <!-- Views -->
+          <div class="guns-views-footer">
+            <i class="fa-solid fa-eye"></i>
+            <span>1,337 views</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Dock -->
+    <div class="guns-bottom-dock">
+      <button id="snowToggleBtn" class="dock-btn active" title="Toggle Snow"><i class="fa-regular fa-snowflake"></i></button>
+      <button id="dockMuteBtn" class="dock-btn" title="Mute/Unmute"><i class="fa-solid fa-volume-high"></i></button>
+      <button id="dockFsBtn" class="dock-btn" title="Toggle Fullscreen"><i class="fa-solid fa-expand"></i></button>
+    </div>
+
+    <!-- Audio element -->
+    <audio id="bgAudio" src="./audio.mp3" loop></audio>
+  </div>
+
+  <script>
+    // Asset fallbacks if hosted standalone without local assets
+    const bgVideo = document.getElementById('bgVideo');
+    bgVideo.onerror = () => { bgVideo.src = 'https://r2.guns.lol/c0625415-62ed-4a5a-bfee-7c840440f45e.mp4'; };
+
+    const bgAudio = document.getElementById('bgAudio');
+    bgAudio.onerror = () => { bgAudio.src = 'https://r2.guns.lol/d24b3433-288c-45d5-95ff-f4b56f4928c4.mp3'; };
+
+    const avatarImg = document.getElementById('avatarImg');
+    avatarImg.onerror = () => { avatarImg.src = 'https://r2.guns.lol/fdd0548a-2a70-4cd4-9ecb-451e56e39be1.webp'; };
+
+    // Click To Enter
+    const clickOverlay = document.getElementById('clickToEnter');
+    const vinyl = document.getElementById('vinylRecord');
+    const playBtn = document.getElementById('playBtn');
+    const trackStatus = document.getElementById('trackStatus');
+    const equalizer = document.getElementById('equalizer');
+    let isPlaying = false;
+
+    function startMusic() {
+      bgAudio.volume = volInput.value / 100;
+      bgAudio.play().then(() => {
+        isPlaying = true;
+        updatePlayState();
+      }).catch(() => {});
+      bgVideo.play().catch(() => {});
+    }
+
+    clickOverlay.addEventListener('click', () => {
+      clickOverlay.classList.add('hidden');
+      startMusic();
+    });
+
+    function updatePlayState() {
+      if (isPlaying) {
+        vinyl.classList.add('spinning');
+        equalizer.classList.add('active');
+        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        trackStatus.textContent = 'Now Playing';
+      } else {
+        vinyl.classList.remove('spinning');
+        equalizer.classList.remove('active');
+        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        trackStatus.textContent = 'Paused';
+      }
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        bgAudio.pause();
+        isPlaying = false;
+      } else {
+        bgAudio.play();
+        isPlaying = true;
+      }
+      updatePlayState();
+    });
+
+    // Scrubber
+    const scrubberFill = document.getElementById('scrubberFill');
+    const scrubberTrack = document.getElementById('scrubberTrack');
+    const currTime = document.getElementById('currTime');
+    const durTime = document.getElementById('durTime');
+
+    function fmt(s) {
+      if (isNaN(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    bgAudio.addEventListener('timeupdate', () => {
+      if (bgAudio.duration) {
+        scrubberFill.style.width = ((bgAudio.currentTime / bgAudio.duration) * 100) + '%';
+        currTime.textContent = fmt(bgAudio.currentTime);
+        durTime.textContent = fmt(bgAudio.duration);
+      }
+    });
+
+    scrubberTrack.addEventListener('click', (e) => {
+      if (!bgAudio.duration) return;
+      const rect = scrubberTrack.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      bgAudio.currentTime = pct * bgAudio.duration;
+    });
+
+    // Volume Control
+    const volInput = document.getElementById('volInput');
+    const volFill = document.getElementById('volFill');
+    const volText = document.getElementById('volText');
+    const volBtn = document.getElementById('volBtn');
+    let isMuted = false;
+
+    volInput.addEventListener('input', (e) => {
+      const v = Number(e.target.value);
+      bgAudio.volume = v / 100;
+      volFill.style.width = v + '%';
+      volText.textContent = v + '%';
+      isMuted = (v === 0);
+    });
+
+    volBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      bgAudio.muted = isMuted;
+      volText.textContent = isMuted ? '0%' : volInput.value + '%';
+      volFill.style.width = isMuted ? '0%' : volInput.value + '%';
+    });
+
+    document.getElementById('dockMuteBtn').addEventListener('click', () => {
+      volBtn.click();
+    });
+
+    // Fullscreen
+    document.getElementById('dockFsBtn').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    // 3D Tilt Card & Glare
+    const cardContainer = document.getElementById('cardContainer');
+    const card = document.getElementById('card');
+    const cardAura = document.getElementById('cardAura');
+    const cardGlare = document.getElementById('cardGlare');
+
+    cardContainer.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const rotX = ((y - rect.height / 2) / (rect.height / 2)) * -10;
+      const rotY = ((x - rect.width / 2) / (rect.width / 2)) * 10;
+
+      card.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      cardAura.style.transform = `translate(${rotY * 1.5}px, ${-rotX * 1.5}px)`;
+      cardGlare.style.background = `radial-gradient(circle at ${(x / rect.width) * 100}% ${(y / rect.height) * 100}%, rgba(255,255,255,0.15), transparent 60%)`;
+    });
+
+    cardContainer.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      card.style.transition = 'transform 0.5s ease-out';
+      cardAura.style.transform = 'translate(0, 0)';
+      cardGlare.style.background = 'none';
+      setTimeout(() => { card.style.transition = 'none'; }, 500);
+    });
+
+    // Snowflakes Canvas
+    const snowCanvas = document.getElementById('snowCanvas');
+    const sCtx = snowCanvas.getContext('2d');
+    let snowEnabled = true;
+    let flakes = [];
+
+    function resizeSnow() {
+      snowCanvas.width = window.innerWidth;
+      snowCanvas.height = window.innerHeight;
+    }
+    resizeSnow();
+    window.addEventListener('resize', resizeSnow);
+
+    for (let i = 0; i < 70; i++) {
+      flakes.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 2 + 0.8,
+        sY: Math.random() * 0.8 + 0.4,
+        wobble: Math.random() * Math.PI * 2,
+        op: Math.random() * 0.6 + 0.3
+      });
+    }
+
+    function renderSnow() {
+      if (snowEnabled) {
+        sCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+        for (const f of flakes) {
+          f.y += f.sY;
+          f.wobble += 0.02;
+          f.x += Math.sin(f.wobble) * 0.5;
+          if (f.y > snowCanvas.height + 10) f.y = -10;
+          if (f.x > snowCanvas.width + 10) f.x = -10;
+          sCtx.beginPath();
+          sCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+          sCtx.fillStyle = `rgba(255, 255, 255, ${f.op})`;
+          sCtx.fill();
+        }
+      } else {
+        sCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+      }
+      requestAnimationFrame(renderSnow);
+    }
+    renderSnow();
+
+    const snowToggleBtn = document.getElementById('snowToggleBtn');
+    snowToggleBtn.addEventListener('click', () => {
+      snowEnabled = !snowEnabled;
+      snowToggleBtn.classList.toggle('active', snowEnabled);
+    });
+
+    // Stardust Cursor
+    const cursorCanvas = document.getElementById('cursorCanvas');
+    const cCtx = cursorCanvas.getContext('2d');
+    let particles = [];
+
+    function resizeCursor() {
+      cursorCanvas.width = window.innerWidth;
+      cursorCanvas.height = window.innerHeight;
+    }
+    resizeCursor();
+    window.addEventListener('resize', resizeCursor);
+
+    window.addEventListener('mousemove', (e) => {
+      for (let i = 0; i < 2; i++) {
+        particles.push({
+          x: e.clientX + (Math.random() - 0.5) * 8,
+          y: e.clientY + (Math.random() - 0.5) * 8,
+          size: Math.random() * 2.5 + 1,
+          sX: (Math.random() - 0.5) * 1.2,
+          sY: (Math.random() - 0.5) * 1.2 - 0.3,
+          op: 1,
+          decay: Math.random() * 0.025 + 0.015,
+          color: Math.random() > 0.4 ? '255, 255, 255' : '168, 85, 247'
+        });
+      }
+    });
+
+    function renderCursor() {
+      cCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.sX;
+        p.y += p.sY;
+        p.op -= p.decay;
+        if (p.op <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        cCtx.beginPath();
+        cCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        cCtx.fillStyle = `rgba(${p.color}, ${p.op})`;
+        cCtx.fill();
+      }
+      requestAnimationFrame(renderCursor);
+    }
+    renderCursor();
+
+    // Discord Live Sync via Lanyard
+    const gearBtn = document.getElementById('gearBtn');
+    const discordForm = document.getElementById('discordIdForm');
+    const discordIdInput = document.getElementById('discordIdInput');
+    let currentDiscordId = localStorage.getItem('kart_discord_id') || '';
+
+    gearBtn.addEventListener('click', () => {
+      discordForm.classList.toggle('active');
+    });
+
+    discordForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = discordIdInput.value.trim();
+      currentDiscordId = val;
+      localStorage.setItem('kart_discord_id', val);
+      discordForm.classList.remove('active');
+      connectLanyard(val);
+    });
+
+    function connectLanyard(userId) {
+      if (!userId) return;
+
+      // Update links
+      document.getElementById('socialDiscord').href = `https://discord.com/users/${userId}`;
+      document.getElementById('uidTooltip').textContent = `ID: ${userId}`;
+
+      // REST fetch
+      fetch(`https://api.lanyard.rest/v1/users/${userId}`)
+        .then(r => r.json())
+        .then(json => {
+          if (json.success) applyLanyardData(json.data);
+        }).catch(() => {});
+
+      // WebSocket live
+      const ws = new WebSocket('wss://api.lanyard.rest/socket');
+      ws.onmessage = (e) => {
+        try {
+          const msg = JSON.parse(e.data);
+          if (msg.op === 1) {
+            setInterval(() => {
+              if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ op: 3 }));
+            }, msg.d.heartbeat_interval);
+            ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: userId } }));
+          }
+          if (msg.op === 0 && (msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE')) {
+            applyLanyardData(msg.d);
+          }
+        } catch (_) {}
+      };
+    }
+
+    function applyLanyardData(data) {
+      if (!data) return;
+      const u = data.discord_user;
+      if (u) {
+        document.getElementById('displayName').textContent = u.global_name || u.display_name || u.username;
+        document.getElementById('discordTag').textContent = '@' + u.username;
+        if (u.avatar) {
+          avatarImg.src = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith('a_') ? 'gif' : 'webp'}?size=512`;
+        }
+        if (u.avatar_decoration_data?.asset) {
+          const deco = document.getElementById('avatarDeco');
+          deco.src = `https://cdn.discordapp.com/avatar-decoration-presets/${u.avatar_decoration_data.asset}.png`;
+          deco.style.display = 'block';
+        }
+      }
+
+      // Status badge
+      const statusBadge = document.getElementById('statusBadge');
+      const statusTag = document.getElementById('discordStatusTag');
+      const st = data.discord_status || 'offline';
+      statusBadge.className = 'avatar-status-badge ' + st;
+      statusTag.textContent = st;
+
+      // Spotify
+      const spBox = document.getElementById('spotifyLiveBox');
+      const dcBox = document.getElementById('discordBox');
+      if (data.listening_to_spotify && data.spotify) {
+        document.getElementById('spotifyArt').src = data.spotify.album_art_url;
+        document.getElementById('spotifySong').textContent = data.spotify.song;
+        document.getElementById('spotifyArtist').textContent = 'by ' + data.spotify.artist;
+        spBox.classList.add('active');
+        dcBox.style.display = 'none';
+      } else {
+        spBox.classList.remove('active');
+        dcBox.style.display = 'flex';
+      }
+
+      // Custom Status
+      const cs = (data.activities || []).find(a => a.id === 'custom');
+      const csEl = document.getElementById('customStatus');
+      if (cs?.state) {
+        csEl.textContent = '💬 ' + cs.state;
+        csEl.style.display = 'inline-block';
+      } else {
+        csEl.style.display = 'none';
+      }
+    }
+
+    if (currentDiscordId) {
+      connectLanyard(currentDiscordId);
+    }
+
+    // Scrolling animated title
+    const pageTitle = '@kartxxx07 | guns.lol ';
+    let tIdx = 0;
+    setInterval(() => {
+      document.title = pageTitle.substring(tIdx) + pageTitle.substring(0, tIdx);
+      tIdx = (tIdx + 1) % pageTitle.length;
+    }, 350);
+  </script>
+</body>
+</html>
