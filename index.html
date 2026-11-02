@@ -248,44 +248,80 @@
       display: none;
     }
 
-    /* Gear button for setting Discord ID */
+    /* Settings Gear Button (Top-Left Screen Corner) */
     .discord-id-config-btn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.04);
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(18, 18, 22, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 30;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      outline: none;
+    }
+
+    .discord-id-config-btn i {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      z-index: 25;
+      width: 100%;
+      height: 100%;
+      line-height: 1;
+      font-size: 0.95rem;
+      transition: transform 0.4s ease;
+      transform-origin: center center;
     }
 
     .discord-id-config-btn:hover {
       color: #ffffff;
-      background: rgba(255, 255, 255, 0.12);
-      transform: rotate(45deg);
+      background: rgba(25, 25, 30, 0.75);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(88, 101, 242, 0.4);
+      transform: scale(1.08);
+    }
+
+    .discord-id-config-btn:hover i {
+      transform: rotate(90deg);
     }
 
     .discord-id-form {
-      width: 100%;
-      background: rgba(10, 10, 15, 0.95);
-      border: 1px solid rgba(88, 101, 242, 0.5);
-      border-radius: 14px;
+      position: fixed;
+      top: 72px;
+      left: 24px;
+      width: 300px;
+      max-width: calc(100vw - 48px);
+      background: rgba(14, 14, 18, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(88, 101, 242, 0.4);
+      border-radius: 16px;
       padding: 16px;
-      margin-bottom: 20px;
       text-align: left;
-      z-index: 25;
+      z-index: 40;
       display: none;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(88, 101, 242, 0.2);
+      animation: formSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .discord-id-form.active { display: block; }
+    @keyframes formSlideDown {
+      from { opacity: 0; transform: translateY(-10px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
     .form-inner label {
       font-size: 0.75rem;
@@ -328,6 +364,71 @@
       display: block;
     }
     .form-help a { color: #5865f2; text-decoration: underline; }
+
+    /* Discord Official Profile Effect Layer (Lord of the Dead / Hades' Throne - Fullscreen Underworld) */
+    .discord-profile-effect-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .discord-profile-effect-container.active {
+      opacity: 1;
+    }
+    .profile-effect-media {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100vw;
+      height: 100vh;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      display: none;
+    }
+    .profile-effect-media.visible {
+      display: block;
+    }
+
+    /* Shockwave ring on click (Cyan Underworld Shockwave - Fullscreen Burst) */
+    .discord-effect-shockwave {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0);
+      border: 4px solid rgba(0, 245, 255, 0.95);
+      box-shadow: 0 0 50px rgba(0, 245, 255, 0.9), 0 0 100px rgba(14, 165, 233, 0.8);
+      opacity: 0;
+      z-index: 2;
+    }
+    .discord-effect-shockwave.burst {
+      animation: shockwaveBurst 2.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    }
+    @keyframes shockwaveBurst {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+      50% { opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(80); opacity: 0; }
+    }
+
+    /* Keep card elements positioned comfortably on top of the effect */
+    .guns-card > *:not(.discord-profile-effect-container):not(.guns-card-ambient-aura):not(.guns-card-glare) {
+      position: relative;
+      z-index: 5;
+    }
 
     /* Fully Rounded Avatar */
     .guns-avatar-wrapper {
@@ -385,10 +486,20 @@
     .avatar-status-badge.dnd .status-badge-dot { background: #f23f43; box-shadow: 0 0 10px rgba(242, 63, 67, 0.9); }
     .avatar-status-badge.offline .status-badge-dot { background: #80848e; box-shadow: none; }
 
+    /* Precision Icon Centering & Alignment */
+    i.fa-solid, i.fa-regular, i.fa-brands, [class^="fa-"], [class*=" fa-"] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
     /* Display Name with Neon Glow */
     .guns-name-row {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       position: relative;
       cursor: pointer;
@@ -400,10 +511,17 @@
       font-weight: 700;
       color: #ffffff;
       letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin: 0;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4), 0 0 35px rgba(255, 255, 255, 0.2);
     }
 
-    .guns-verified-badge { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8)); }
+    .guns-verified-badge {
+      display: inline-block;
+      flex-shrink: 0;
+      vertical-align: middle;
+      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8));
+    }
 
     .guns-tooltip {
       position: absolute;
@@ -431,6 +549,7 @@
     .guns-badges-row {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       margin-top: 10px;
       transform: translateZ(12px);
@@ -442,12 +561,20 @@
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      line-height: 1;
+      padding: 0;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .guns-badge i {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.72rem;
-      transition: all 0.25s ease;
-      cursor: pointer;
+      line-height: 1;
     }
     .guns-badge:hover {
       background: rgba(255, 255, 255, 0.12);
@@ -477,12 +604,22 @@
     .guns-location {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       font-size: 0.85rem;
+      line-height: 1;
       color: rgba(255, 255, 255, 0.55);
       margin-top: 10px;
       position: relative;
       cursor: pointer;
+    }
+    .guns-location i {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      line-height: 1;
+      color: rgba(255, 255, 255, 0.65);
     }
 
     /* Discord Box */
@@ -649,12 +786,15 @@
       background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
       border: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 0.7rem;
       cursor: pointer;
+      padding: 0;
+      line-height: 1;
     }
+    .music-pill-play-btn i.fa-play { transform: translateX(1px); }
     .music-pill-play-btn:hover { background: #ffffff; color: #000000; transform: scale(1.1); }
 
     .music-scrubber-track {
@@ -709,13 +849,21 @@
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.07);
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       color: rgba(255, 255, 255, 0.8);
       font-size: 1.15rem;
       text-decoration: none;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      padding: 0;
+      line-height: 1;
+    }
+    .guns-social-icon i {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
     .guns-social-icon:hover {
       color: #ffffff;
@@ -725,12 +873,21 @@
     }
 
     .guns-views-footer {
-      display: flex;
+      display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       font-size: 0.78rem;
       color: rgba(255, 255, 255, 0.4);
       margin-top: 20px;
+      line-height: 1;
+    }
+    .guns-views-footer i {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      font-size: 0.76rem;
     }
 
     /* Bottom Quick Controls Dock */
@@ -757,16 +914,78 @@
       border-radius: 50%;
       background: none;
       border: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       color: rgba(255, 255, 255, 0.6);
       font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.2s ease;
+      padding: 0;
+      line-height: 1;
+    }
+    .dock-btn i {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
     .dock-btn:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
     .dock-btn.active { color: #a855f7; background: rgba(168, 85, 247, 0.15); }
+
+    /* Red / Blue Underworld Theme System */
+    :root {
+      --flame-color: #00f5ff;
+      --flame-glow: rgba(0, 245, 255, 0.9);
+      --flame-dim: rgba(0, 245, 255, 0.2);
+    }
+
+    body.theme-red {
+      --flame-color: #ff2a4b;
+      --flame-glow: rgba(255, 42, 75, 0.9);
+      --flame-dim: rgba(255, 42, 75, 0.2);
+    }
+
+    body.theme-red .profile-effect-media {
+      filter: hue-rotate(180deg) saturate(1.4) brightness(1.05);
+    }
+
+    body.theme-red .guns-avatar-decoration {
+      filter: hue-rotate(180deg) saturate(1.4);
+    }
+
+    body.theme-red .discord-effect-shockwave {
+      border-color: rgba(255, 42, 75, 0.95);
+      box-shadow: 0 0 50px rgba(255, 42, 75, 0.9), 0 0 100px rgba(220, 38, 38, 0.85);
+    }
+
+    body.theme-red #themeToggleBtn {
+      color: #ff2a4b;
+      background: rgba(255, 42, 75, 0.18);
+      box-shadow: 0 0 12px rgba(255, 42, 75, 0.4);
+    }
+
+    body.theme-red .track-status {
+      color: #ff2a4b;
+    }
+
+    body.theme-red .music-scrubber-fill {
+      background: linear-gradient(90deg, #ff2a4b, #f97316);
+    }
+
+    body.theme-red .vinyl-center {
+      background: linear-gradient(135deg, #ff2a4b, #f97316);
+      box-shadow: 0 0 8px rgba(255, 42, 75, 0.8);
+    }
+
+    #themeToggleBtn {
+      color: #00f5ff;
+      transition: all 0.3s ease;
+    }
+    #themeToggleBtn:hover {
+      transform: scale(1.15) rotate(15deg);
+      box-shadow: 0 0 15px var(--flame-glow);
+    }
   </style>
 </head>
 <body>
@@ -786,6 +1005,13 @@
       <div class="guns-bg-overlay"></div>
     </div>
 
+    <!-- Discord Official Fullscreen Profile Effect Layer (Lord of the Dead) -->
+    <div id="discordProfileEffect" class="discord-profile-effect-container">
+      <img id="profileEffectIntro" class="profile-effect-media" alt="Discord Profile Effect Intro" />
+      <img id="profileEffectIdle" class="profile-effect-media" alt="Discord Profile Effect Idle" />
+      <div id="effectShockwave" class="discord-effect-shockwave"></div>
+    </div>
+
     <!-- Snowflakes Canvas -->
     <canvas id="snowCanvas" class="snow-canvas"></canvas>
 
@@ -800,6 +1026,21 @@
         <span class="bracket">]</span>
       </div>
     </div>
+
+    <!-- Settings Button (Top-Left Screen Corner) -->
+    <button id="gearBtn" class="discord-id-config-btn" title="Connect Discord ID"><i class="fa-solid fa-gear"></i></button>
+
+    <!-- Form to change Discord ID -->
+    <form id="discordIdForm" class="discord-id-form">
+      <div class="form-inner">
+        <label>Enter your numerical Discord User ID:</label>
+        <div class="form-input-row">
+          <input type="text" id="discordIdInput" placeholder="e.g. 1007140362789330944" />
+          <button type="submit">Sync</button>
+        </div>
+        <span class="form-help">Join <a href="https://discord.gg/lanyard" target="_blank">discord.gg/lanyard</a> once to enable live sync!</span>
+      </div>
+    </form>
 
     <!-- Volume Control -->
     <div class="volume-widget">
@@ -818,25 +1059,10 @@
         <div id="card" class="guns-card">
           <div id="cardGlare" class="guns-card-glare"></div>
 
-          <!-- Gear button -->
-          <button id="gearBtn" class="discord-id-config-btn" title="Connect Discord ID"><i class="fa-solid fa-gear"></i></button>
-
-          <!-- Form to change Discord ID -->
-          <form id="discordIdForm" class="discord-id-form">
-            <div class="form-inner">
-              <label>Enter your numerical Discord User ID:</label>
-              <div class="form-input-row">
-                <input type="text" id="discordIdInput" placeholder="e.g. 1007140362789330944" />
-                <button type="submit">Sync</button>
-              </div>
-              <span class="form-help">Join <a href="https://discord.gg/lanyard" target="_blank">discord.gg/lanyard</a> once to enable live sync!</span>
-            </div>
-          </form>
-
           <!-- Avatar -->
           <div class="guns-avatar-wrapper">
             <img id="avatarImg" class="guns-avatar-img" src="./avatar.webp" alt="Avatar" />
-            <img id="avatarDeco" class="guns-avatar-decoration" style="display:none;" />
+            <img id="avatarDeco" class="guns-avatar-decoration" src="https://cdn.discordapp.com/avatar-decoration-presets/a_68fda5e61b1957d69913b52bda6fab31.png?size=240&passthrough=true" alt="Lord of the Dead Decoration" />
             <div id="statusBadge" class="avatar-status-badge online">
               <span class="status-badge-dot"></span>
             </div>
@@ -868,7 +1094,7 @@
           <!-- Location -->
           <div class="guns-location">
             <i class="fa-solid fa-location-dot location-icon"></i>
-            <span>India 🇮🇳</span>
+            <span>India, Mumbai</span>
             <div class="guns-tooltip">Location</div>
           </div>
 
@@ -931,17 +1157,17 @@
 
           <!-- Socials -->
           <div class="guns-socials-row">
-            <a href="https://discord.com/users/kartxxx07" id="socialDiscord" target="_blank" class="guns-social-icon" title="Discord"><i class="fa-brands fa-discord"></i></a>
-            <a href="https://github.com/kartxxx07" target="_blank" class="guns-social-icon" title="GitHub"><i class="fa-brands fa-github"></i></a>
-            <a href="https://steamcommunity.com/id/kartxxx07" target="_blank" class="guns-social-icon" title="Steam"><i class="fa-brands fa-steam"></i></a>
-            <a href="https://open.spotify.com/" target="_blank" class="guns-social-icon" title="Spotify"><i class="fa-brands fa-spotify"></i></a>
+            <a href="https://discord.gg/GactcrZWt" id="socialDiscord" target="_blank" class="guns-social-icon" title="Discord Server"><i class="fa-brands fa-discord"></i></a>
+            <a href="https://github.com/kartuu07" target="_blank" class="guns-social-icon" title="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="https://steamcommunity.com/profiles/76561198769774602/" target="_blank" class="guns-social-icon" title="Steam"><i class="fa-brands fa-steam"></i></a>
+            <a href="https://open.spotify.com/user/313vfxy73yuplllbsndj2l62ix74?si=d85e9f5f92de46a2" target="_blank" class="guns-social-icon" title="Spotify"><i class="fa-brands fa-spotify"></i></a>
             <a href="https://instagram.com/kartxxx07" target="_blank" class="guns-social-icon" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
           </div>
 
           <!-- Views -->
           <div class="guns-views-footer">
             <i class="fa-solid fa-eye"></i>
-            <span>1,337 views</span>
+            <span id="pageViewsCount">-- views</span>
           </div>
         </div>
       </div>
@@ -949,6 +1175,7 @@
 
     <!-- Bottom Dock -->
     <div class="guns-bottom-dock">
+      <button id="themeToggleBtn" class="dock-btn" title="Toggle Underworld Flame (Blue / Red)"><i class="fa-solid fa-fire-flame-curved"></i></button>
       <button id="snowToggleBtn" class="dock-btn active" title="Toggle Snow"><i class="fa-regular fa-snowflake"></i></button>
       <button id="dockMuteBtn" class="dock-btn" title="Mute/Unmute"><i class="fa-solid fa-volume-high"></i></button>
       <button id="dockFsBtn" class="dock-btn" title="Toggle Fullscreen"><i class="fa-solid fa-expand"></i></button>
@@ -989,6 +1216,7 @@
     clickOverlay.addEventListener('click', () => {
       clickOverlay.classList.add('hidden');
       startMusic();
+      triggerDiscordProfileEffect();
     });
 
     function updatePlayState() {
@@ -1156,6 +1384,27 @@
       snowToggleBtn.classList.toggle('active', snowEnabled);
     });
 
+    // Underworld Theme Switcher (Blue Cyan Flame / Red Crimson Flame)
+    let currentTheme = localStorage.getItem('underworld_theme') || 'blue';
+    if (currentTheme === 'red') {
+      document.body.classList.add('theme-red');
+    }
+
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    themeToggleBtn.addEventListener('click', () => {
+      const isRed = document.body.classList.toggle('theme-red');
+      currentTheme = isRed ? 'red' : 'blue';
+      localStorage.setItem('underworld_theme', currentTheme);
+
+      // Trigger a flame shockwave burst in the new theme color
+      const shockwave = document.getElementById('effectShockwave');
+      if (shockwave) {
+        shockwave.classList.remove('burst');
+        void shockwave.offsetWidth;
+        shockwave.classList.add('burst');
+      }
+    });
+
     // Stardust Cursor
     const cursorCanvas = document.getElementById('cursorCanvas');
     const cCtx = cursorCanvas.getContext('2d');
@@ -1178,7 +1427,9 @@
           sY: (Math.random() - 0.5) * 1.2 - 0.3,
           op: 1,
           decay: Math.random() * 0.025 + 0.015,
-          color: Math.random() > 0.4 ? '255, 255, 255' : '168, 85, 247'
+          color: Math.random() > 0.35
+            ? '255, 255, 255'
+            : (currentTheme === 'red' ? '255, 42, 75' : '0, 245, 255')
         });
       }
     });
@@ -1203,11 +1454,56 @@
     }
     renderCursor();
 
+    // Discord Official Profile Effect Assets (Underworld: Lord of the Dead / Hades' Throne - Blue)
+    const DISCORD_EFFECT_INTRO = 'https://cdn.discordapp.com/media/v1/collectibles-shop/9437a524a4f50e83ae4963ffcf50833b7c068fc8b48b40efd6913f257a438016';
+    const DISCORD_EFFECT_IDLE  = 'https://cdn.discordapp.com/media/v1/collectibles-shop/21f998898b7fd30a0a86fd3adfd26e2037a36772aafe66905a9ad11cb9d2e97e';
+    const DISCORD_AVATAR_DECO  = 'https://cdn.discordapp.com/avatar-decoration-presets/a_68fda5e61b1957d69913b52bda6fab31.png?size=240&passthrough=true';
+
+    // Preload assets immediately for zero-delay playback on enter
+    (function preloadProfileEffectAssets() {
+      const p1 = new Image(); p1.src = DISCORD_EFFECT_INTRO;
+      const p2 = new Image(); p2.src = DISCORD_EFFECT_IDLE;
+      const p3 = new Image(); p3.src = DISCORD_AVATAR_DECO;
+    })();
+
+    let effectTimer = null;
+    function triggerDiscordProfileEffect() {
+      const container = document.getElementById('discordProfileEffect');
+      const introImg = document.getElementById('profileEffectIntro');
+      const idleImg = document.getElementById('profileEffectIdle');
+      const shockwave = document.getElementById('effectShockwave');
+      if (!container || !introImg || !idleImg) return;
+
+      // Cyan underworld shockwave burst
+      if (shockwave) {
+        shockwave.classList.remove('burst');
+        void shockwave.offsetWidth;
+        shockwave.classList.add('burst');
+      }
+
+      container.classList.add('active');
+
+      if (effectTimer) clearTimeout(effectTimer);
+
+      // 1. Play Intro Animation (fresh timestamp guarantees APNG plays from frame 0)
+      introImg.src = DISCORD_EFFECT_INTRO + '?t=' + Date.now();
+      introImg.classList.add('visible');
+      idleImg.classList.remove('visible');
+
+      // 2. Exact Discord intro runtime is 5000ms -> seamlessly transition to looping idle
+      effectTimer = setTimeout(() => {
+        idleImg.src = DISCORD_EFFECT_IDLE;
+        idleImg.classList.add('visible');
+        introImg.classList.remove('visible');
+      }, 5000);
+    }
+
     // Discord Live Sync via Lanyard
     const gearBtn = document.getElementById('gearBtn');
     const discordForm = document.getElementById('discordIdForm');
     const discordIdInput = document.getElementById('discordIdInput');
-    let currentDiscordId = localStorage.getItem('kart_discord_id') || '';
+    let currentDiscordId = localStorage.getItem('kart_discord_id') || '1421713832363163799';
+    discordIdInput.value = currentDiscordId;
 
     gearBtn.addEventListener('click', () => {
       discordForm.classList.toggle('active');
@@ -1265,7 +1561,7 @@
         }
         if (u.avatar_decoration_data?.asset) {
           const deco = document.getElementById('avatarDeco');
-          deco.src = `https://cdn.discordapp.com/avatar-decoration-presets/${u.avatar_decoration_data.asset}.png`;
+          deco.src = `https://cdn.discordapp.com/avatar-decoration-presets/${u.avatar_decoration_data.asset}.png?size=240&passthrough=true`;
           deco.style.display = 'block';
         }
       }
@@ -1313,6 +1609,60 @@
       document.title = pageTitle.substring(tIdx) + pageTitle.substring(0, tIdx);
       tIdx = (tIdx + 1) % pageTitle.length;
     }, 350);
+
+    // Live Unique Views Counter (guns.lol style)
+    (async function initViewCounter() {
+      const viewsEl = document.getElementById('pageViewsCount');
+      if (!viewsEl) return;
+
+      const KEY = 'kartxxx07_view_count_v2';
+      const SESSION_KEY = 'kartxxx07_visited_session_v2';
+      const BASE_VIEWS = 39;
+
+      // 1. Local fallback base
+      let localCount = parseInt(localStorage.getItem(KEY) || BASE_VIEWS.toString(), 10);
+      if (!sessionStorage.getItem(SESSION_KEY)) {
+        if (!localStorage.getItem(KEY)) {
+          localCount = BASE_VIEWS;
+        } else {
+          localCount += 1;
+        }
+        localStorage.setItem(KEY, localCount);
+        sessionStorage.setItem(SESSION_KEY, 'true');
+      }
+
+      function animateCount(target) {
+        let current = Math.max(0, target - 15);
+        const step = Math.max(1, Math.floor((target - current) / 15));
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          viewsEl.textContent = `${current.toLocaleString()} views`;
+        }, 30);
+      }
+
+      // Display local count smoothly
+      animateCount(localCount);
+
+      // 2. Fetch/increment global cloud counter (CounterAPI)
+      try {
+        const action = sessionStorage.getItem('kartxxx07_cloud_counted_v2') ? 'get' : 'up';
+        const res = await fetch(`https://api.counterapi.dev/v1/kartxxx07-showcase-v2/views/${action}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && typeof data.count === 'number') {
+            sessionStorage.setItem('kartxxx07_cloud_counted_v2', 'true');
+            const totalViews = Math.max(localCount, BASE_VIEWS + data.count - 1);
+            animateCount(totalViews);
+          }
+        }
+      } catch (e) {
+        // Fallback to local count smoothly
+      }
+    })();
   </script>
 </body>
 </html>
